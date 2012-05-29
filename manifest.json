@@ -1,0 +1,22 @@
+{
+    "name": "Chrono Tyrant",
+    "version": "1",
+    "description":
+    "Keep tight track of your time.",
+    "icons": {
+        "16": "img/16.png", 
+        "48": "img/48.png", 
+        "128": "img/128.png"
+    },
+    "permissions": ["tabs", "notifications", "http://*/*", "https://*/*", "https://www.google.com/jsapi"],
+    "options_page": "options.html",
+    "background": {
+        "scripts": ["js/background.js"]
+    },
+    "manifest_version": 2,
+    "content_scripts": [ {
+        "all_frames": true,
+        "js": [ "js/jquery.min.js", "js/jquery-ui.min.js" ],
+        "matches": [ "http://*/*", "https://*/*" ] 
+    } ]
+}

@@ -1,0 +1,52 @@
+body {
+    font-family: Arial, Helvetica, "Liberation Sans", FreeSans, sans-serif; 
+    font-size: 13px;
+    color: #333;
+    /*width: 600px;
+    margin: 20px auto;*/
+}
+/*====================*/
+/* Header             */
+/*====================*/
+header {
+    position: relative;
+    height: 64px;
+    background: url(/img/128.png) 0 0 no-repeat;
+    -webkit-background-size: 64px;
+    padding-left: 70px;
+    text-shadow: 0 2px 4px #ccc;
+    margin-bottom: 15px;
+}
+header h1 {
+    margin: 0;
+    font-size: 22px;
+    padding-top: 12px;
+}
+header small {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+#right{
+
+    margin-left: 110px;
+    padding-top: 10px;
+}
+#left{
+    float: left;
+}
+
+#trackers{
+    width: 500px;
+    background: white;
+    padding: 5px;
+    font-size: 16px;
+    
+}
+
+#newTracker{
+    width: 350px;
+}
+#newTrackerPoints{
+    width: 150px;
+}

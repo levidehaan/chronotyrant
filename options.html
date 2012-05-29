@@ -1,0 +1,145 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Chrono Tyrant</title>
+        <link href="css/style.css" rel="stylesheet" type="text/css">
+        <link href="css/dark-hive/jquery-ui.css" rel="stylesheet" type="text/css">
+        <script src="js/jquery.min.js"></script>
+        <script src="js/jquery-ui.min.js"></script>
+        <script src="js/options.js"></script>
+    </head>
+    <body>
+        <header>
+            <h1>
+                Chrono Tyrant
+            </h1>
+        </header>
+        <div id="tabs">
+            <ul>
+                <li><a href="#box-options">Time Settings</a></li>
+                <li><a href="#box-tracker">Track List</a></li>
+                <li><a href="#box-stats">View Local Stats</a></li>
+                <li><a href="#box-remoteConfig">Remote Config</a></li>
+                <li><a href="#box-remoteStats">View Remote Stats</a></li>
+            </ul>
+
+            <section id="box-options">
+                <h2>Options</h2>
+                <form id="options">
+                    <input type="checkbox" name="enabled" checked>
+                    Display a notification every
+                    <select id="frequency">
+                        <option>5</option>
+                        <option>10</option>
+                        <option>15</option>
+                        <option>20</option>
+                        <option>25</option>
+                        <option>30</option>
+                        <option>60</option>
+                    </select>
+                    minute(s).<br/><br/>
+                    Work Hours:
+                    <div id="workHours">
+                        <input type="checkbox" id="12am" value="00">12am
+                        <input type="checkbox" id="1am" value="01">1am
+                        <input type="checkbox" id="2am" value="02">2am
+                        <input type="checkbox" id="3am" value="03">3am
+                        <input type="checkbox" id="4am" value="04">4am
+                        <input type="checkbox" id="5am" value="05">5am
+                        <input type="checkbox" id="6am" value="06">6am
+                        <input type="checkbox" id="7am" value="07">7am
+                        <input type="checkbox" id="8am" value="08">8am
+                        <input type="checkbox" id="9am" value="09">9am
+                        <input type="checkbox" id="10am" value="10">10am
+                        <input type="checkbox" id="11am" value="11">11am
+                        <input type="checkbox" id="12pm" value="12">12am
+                        <input type="checkbox" id="1pm" value="13">1pm
+                        <input type="checkbox" id="2pm" value="14">2pm
+                        <input type="checkbox" id="3pm" value="15">3pm
+                        <input type="checkbox" id="4pm" value="16">4pm
+                        <input type="checkbox" id="5pm" value="17">5pm
+                        <input type="checkbox" id="6pm" value="18">6pm
+                        <input type="checkbox" id="7pm" value="19">7pm
+                        <input type="checkbox" id="8pm" value="20">8pm
+                        <input type="checkbox" id="9pm" value="21">9pm
+                        <input type="checkbox" id="10pm" value="22">10pm
+                        <input type="checkbox" id="11pm" value="23">11pm
+                    </div>
+                </form>
+            </section>
+            <section id="box-tracker">
+                <h2>Trackers</h2>
+                <h3>Set up your projects, breaks, skype, etc.. here</h3>
+                <form id="tracker">
+                    <table>
+                        <tr>
+                            <td>Name: 
+                                <input type="text" value="" id="newTracker">
+                                Points: 
+                                <input type="text" value="" id="newTrackerPoints">
+                            </td>
+                            <td>
+                                <button id="addButton">Add Tracker</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <select id="trackers" size="20" multiple>
+                                </select>
+                            </td>
+                            <td>
+                                <button id="removeButton">Remove Tracker</button>
+                            </td>
+                        </tr>
+
+                    </table>
+
+                </form>
+            </section>
+            <section id="box-stats">
+                <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+                <script type="text/javascript">
+
+                    // Load the Visualization API and the piechart package.
+                    google.load('visualization', '1.0', {'packages':['corechart']});
+
+                    // Set a callback to run when the Google Visualization API is loaded.
+                    google.setOnLoadCallback(drawChart);
+
+                    // Callback that creates and populates a data table,
+                    // instantiates the pie chart, passes in the data and
+                    // draws it.
+                    function drawChart() {
+
+                        // Create the data table.
+                        var data = new google.visualization.DataTable();
+                        data.addColumn('string', 'Topping');
+                        data.addColumn('number', 'Slices');
+                        data.addRows([
+                            ['Mushrooms', 3],
+                            ['Onions', 1],
+                            ['Olives', 1],
+                            ['Zucchini', 1],
+                            ['Pepperoni', 2]
+                        ]);
+
+                        // Set chart options
+                        var options = {'title':'How Much Pizza I Ate Last Night',
+                            'width':400,
+                            'height':300};
+
+                        // Instantiate and draw our chart, passing in some options.
+                        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+                        chart.draw(data, options);
+                    }
+                </script>
+                <div id="chart_div"></div>
+            </section>
+            <section id="box-remoteConfig">
+            </section>
+            <section id="box-remoteStats">
+            </section>
+        </div>
+
+    </body>
+</html>
