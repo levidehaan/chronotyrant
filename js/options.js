@@ -85,6 +85,7 @@ function addTracker(){
     d[name] = value;
     if(name != "" && value.match(/\S/)){
         $('#newTracker').val(null);
+        $('#newTrackerPoints').val(null);
         setTrackerVals(d);
         $('#trackers').append(new Option(name, value, true, false));
     }
@@ -187,4 +188,41 @@ function diff (obj1,obj2) {
         }
     });
     return result;
+}
+
+ct = "http://api.th3m4db0x.com";
+
+amplify.request.define("addTracker", "ajax", {
+    url : ct + "/api/v1/addTracker",
+    dataType : "json",
+    decoder : function(data, status, xhr, success, error) {
+
+        if(xhr.status === 404) {
+            console.log("404");
+            error('404');
+        }
+        if(status === "error") {
+            console.log("error: ");
+            error();
+        }
+        success(data);
+    },
+    cache : true
+});
+
+var ampAddTracker = function(dfd) {
+
+    amplify.request({
+        resourceId : "addTracker",
+        success : function(data) {
+            data = {
+                addTracker : data
+            };
+            dfd.resolve(data);
+        },
+        error : function(data) {
+            console.log('error: ');
+            console.log(data);
+        }
+    });
 }
