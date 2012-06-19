@@ -75,9 +75,9 @@
                     <table>
                         <tr>
                             <td>Name: 
-                                <input type="text" value="" id="newTracker">
+                                <input type="text" value="" id="newTracker"/>
                                 Points: 
-                                <input type="text" value="" id="newTrackerPoints">
+                                <input type="text" value="" id="newTrackerPoints"/>
                             </td>
                             <td>
                                 <button id="addButton">Add Tracker</button>
@@ -103,6 +103,34 @@
                 <div id="chart_div"></div>
             </section>
             <section id="box-remoteConfig">
+                <h2>Set up connection to ChronoTyrant server</h2>
+                <form id="userInfo">
+                    <table>
+                        <tr>
+                            <td>
+                                Server IP:
+                            </td>
+                            <td>
+                                <input type="text" value="" id="serverAddr"/>                                
+                            </td>
+                            <td>
+                                <button id="saveServer">Save</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Username:
+                            </td>
+                            <td>
+                                <input type="text" value="" id="username"/>                                
+                            </td>
+                            <td>
+                                <button id="saveUser">Save</button>
+                            </td>
+                        </tr>
+                        
+                    </table>
+                </form>
             </section>
             <section id="box-remoteStats">
             </section>

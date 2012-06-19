@@ -11,7 +11,18 @@ $(function() {
         console.log("removing");
         removeTracker();
     });
-    
+    $("#saveServer").click(function(e){
+        console.log("save server");
+        e.preventDefault(); 
+        var serverIP = $("#serverAddr").val();
+        console.log(serverIP);
+        amplify.store("serverIP", serverIP);
+    });
+    $("#saveUser").click(function(e){
+        e.preventDefault();
+        var username = $("#username").val();
+        saveUser(username);
+    });
     init();
 });
 
@@ -190,10 +201,11 @@ function diff (obj1,obj2) {
     return result;
 }
 
-ct = "http://api.th3m4db0x.com";
+var ct = "http://"+amplify.store("serverIP");
 
 amplify.request.define("addTracker", "ajax", {
-    url : ct + "/api/v1/addTracker",
+    type: "POST",
+    url : ct + "/tracker/set/"+amplify.store("username"),
     dataType : "json",
     decoder : function(data, status, xhr, success, error) {
 
@@ -207,18 +219,34 @@ amplify.request.define("addTracker", "ajax", {
         }
         success(data);
     },
-    cache : true
+    cache : false
 });
 
-var ampAddTracker = function(dfd) {
+amplify.request.define("saveUser", "ajax", {
+    type: "POST",
+    url: "http://127.0.0.1:3000/addUser",
+    dataType: "json",
+    decoder: function(data, status, xhr, success, error){
+        if(xhr.status === 404) {
+            console.log("404");
+            error('404');
+        }
+        if(status === "error") {
+            console.log("error: ");
+            error();
+        }
+        success(data);
+    },
+    cache : false   
+});
+
+function ampAddTracker(dfd, data) {
 
     amplify.request({
         resourceId : "addTracker",
-        success : function(data) {
-            data = {
-                addTracker : data
-            };
-            dfd.resolve(data);
+        data: data,
+        success : function(retdata) {
+            dfd.resolve(retdata);
         },
         error : function(data) {
             console.log('error: ');
@@ -227,3 +255,18 @@ var ampAddTracker = function(dfd) {
     });
 }
 
+function saveUser(username){
+    amplify.request({
+        resourceId: "saveUser",
+        data: {
+            "user" : username
+        },
+        success: function(data){
+            console.log(data);
+        },
+        error: function(data){
+            console.log("ERROR:");
+            console.log(data);
+        }
+    });
+}
