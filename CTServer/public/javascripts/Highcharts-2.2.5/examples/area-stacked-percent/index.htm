@@ -1,0 +1,76 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Highcharts Example</title>
+
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+		<script type="text/javascript">
+$(function () {
+    var chart;
+    $(document).ready(function() {
+        chart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'container',
+                type: 'area'
+            },
+            title: {
+                text: 'Historic and Estimated Worldwide Population Distribution by Region'
+            },
+            subtitle: {
+                text: 'Source: Wikipedia.org'
+            },
+            xAxis: {
+                categories: ["cheese", "funkychicken", "freakyMonkey", "arseTards", "chatting", "pooping", "eating"],
+                tickmarkPlacement: 'on',
+                title: {
+                    enabled: false
+                }
+            },
+            yAxis: {
+                title: {
+                    text: 'Percent'
+                }
+            },
+            tooltip: {
+                formatter: function() {
+                        return ''+
+                        this.x +': '+ Highcharts.numberFormat(this.percentage, 1) +'% ('+
+                        Highcharts.numberFormat(this.y, 0, ',') +' millions)';
+                }
+            },
+            plotOptions: {
+                areaspline: {
+                    fillOpacity: 0.5
+                }
+            },
+            series: [{
+                name: 'cheese',
+                data: [15, 15, 15, 15, 15, 15, 15]
+            }, {
+                name: 'funkychicken',
+                data: [5, 5, 5, 5, 5, 5, 5]
+            }, {
+                name: 'freakyMonkey',
+                data: [9, 9]
+            }, {
+                name: 'arseTards',
+                data: [20, 20, 20, 20, 20, 20, 20, 20, 20]
+            }, {
+                name: 'chatting',
+                data: [8,8,8,8]
+            }]
+        });
+    });
+    
+});
+		</script>
+	</head>
+	<body>
+<script src="../../js/highcharts.js"></script>
+<script src="../../js/modules/exporting.js"></script>
+
+<div id="container" style="min-width: 400px; height: 400px; margin: 0 auto"></div>
+
+	</body>
+</html>

@@ -4,23 +4,33 @@ $(document).ready(function(){
 
     updateDisplayProjects();
 
-    
+    var time = chrome.extension.getBackgroundPage().getTime();
 
     $('#project').on("change",function(e) {
         
-        var time = chrome.extension.getBackgroundPage().getTime(),
-        selected = $("#project :selected"),
+        var selected = $("#project :selected"),
         selectedName = selected.html(),
         selectedValue = selected.val(),
         store = {};
         
-        store[time.ymdhm] = {name: selectedName, value: selectedValue};
+        store[time.ymdhm] = {
+            name: selectedName, 
+            value: selectedValue
+        };
         if(localStorage.timeStore){
             var timeStore = getTimeStore();
             $.extend(timeStore, store);
             localStorage.timeStore = JSON.stringify(timeStore);
+            chrome.extension.sendRequest({
+                id:"saveTrackerData", 
+                data: timeStore
+            });
         }else{
             localStorage.timeStore = JSON.stringify(store);
+            chrome.extension.sendRequest({
+                id:"saveTrackerData", 
+                data: store
+            });
         }
         
         window.close();
@@ -31,13 +41,24 @@ $(document).ready(function(){
         var time = chrome.extension.getBackgroundPage().getTime(),        
         store = {};
         
-        store[time.ymdhm] = {name: "5minbreak", value: 0};
+        store[time.ymdhm] = {
+            name: "5minbreak", 
+            value: 0
+        };
         if(localStorage.timeStore){
             var timeStore = getTimeStore();
             $.extend(timeStore, store);
             localStorage.timeStore = JSON.stringify(timeStore);
+            chrome.extension.sendRequest({
+                id:"saveTrackerData", 
+                data: timeStore
+            });
         }else{
             localStorage.timeStore = JSON.stringify(store);
+            chrome.extension.sendRequest({
+                id:"saveTrackerData", 
+                data: store
+            });
         }
     
         window.close();
@@ -48,13 +69,24 @@ $(document).ready(function(){
         var time = chrome.extension.getBackgroundPage().getTime(),    
         store = {};
         
-        store[time.ymdhm] = {name: "15minbreak", value: 0};
+        store[time.ymdhm] = {
+            name: "15minbreak", 
+            value: 0
+        };
         if(localStorage.timeStore){
             var timeStore = getTimeStore();
             $.extend(timeStore, store);
             localStorage.timeStore = JSON.stringify(timeStore);
+            chrome.extension.sendRequest({
+                id:"saveTrackerData", 
+                data: timeStore
+            });
         }else{
             localStorage.timeStore = JSON.stringify(store);
+            chrome.extension.sendRequest({
+                id:"saveTrackerData", 
+                data: store
+            });
         }
     
         window.close();
@@ -65,13 +97,24 @@ $(document).ready(function(){
         var time = chrome.extension.getBackgroundPage().getTime(),        
         store = {};
         
-        store[time.ymdhm] = {name: "30minbreak", value: 0};
+        store[time.ymdhm] = {
+            name: "30minbreak", 
+            value: 0
+        };
         if(localStorage.timeStore){
             var timeStore = getTimeStore();
             $.extend(timeStore, store);
             localStorage.timeStore = JSON.stringify(timeStore);
+            chrome.extension.sendRequest({
+                id:"saveTrackerData", 
+                data: timeStore
+            });
         }else{
             localStorage.timeStore = JSON.stringify(store);
+            chrome.extension.sendRequest({
+                id:"saveTrackerData", 
+                data: store
+            });
         }
     
         window.close();
@@ -84,13 +127,24 @@ $(document).ready(function(){
         
         localStorage.enabled = false;
         
-        store[time.ymdhm] = {name: "Done For The Day", value: 0};
+        store[time.ymdhm] = {
+            name: "Done For The Day", 
+            value: 0
+        };
         if(localStorage.timeStore){
             var timeStore = getTimeStore();
             $.extend(timeStore, store);
             localStorage.timeStore = JSON.stringify(timeStore);
+            chrome.extension.sendRequest({
+                id:"saveTrackerData", 
+                data: timeStore
+            });
         }else{
             localStorage.timeStore = JSON.stringify(store);
+            chrome.extension.sendRequest({
+                id:"saveTrackerData", 
+                data: store
+            });
         }
     
         window.close();

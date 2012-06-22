@@ -38,11 +38,20 @@ app.configure('production', function(){
 // Routes
 
 app.get('/', routes.index);
+
+app.get('/trackers/userList', function(req, res){
+   res.contentType("application/json");
+   trackers.list(function(err, body){
+      if(!err){
+          res.send(body);;
+      } 
+   });
+});
+
 app.get('/trackers/get/:user', function(req, res){
     res.contentType("application/json");
     trackers.get(req.params.user, {}, function(err, body){
         
-        console.log(body);
         res.send(body); 
     })
 });
@@ -51,11 +60,8 @@ app.post('/trackers/set/:user', function(req, res){
     
     trackers.get(req.params.user, {}, function(err, body){
         console.log(body);
-        
-        us.extend(body, req.body.data);
-        us.extend(body, {
-            "_rev": body._rev
-        } );
+                
+        us.extend(body.TrackerInfo, req.body);
         
         console.log(body);
         

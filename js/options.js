@@ -1,29 +1,55 @@
 window.id = "options";
 
+
 $(function() {
+    
+    //Events and listeners
     $( "#tabs" ).tabs();
+    
     $('#addButton').click(function(e){
         e.preventDefault();
         addTracker();
     });
+    
     $('#removeButton').click(function(e){
         e.preventDefault();
         console.log("removing");
         removeTracker();
     });
+    
     $("#saveServer").click(function(e){
         console.log("save server");
         e.preventDefault(); 
-        var serverIP = $("#serverAddr").val();
-        console.log(serverIP);
-        amplify.store("serverIP", serverIP);
+        var server = {};
+        server.ip = $("#serverAddr").val();
+        server.port = $("#serverPort").val();
+        amplify.store("server", server);
+        $("#usernameVals").show();
+        enableServer();
     });
+    
     $("#saveUser").click(function(e){
         e.preventDefault();
         var username = $("#username").val();
-        saveUser(username);
+        amplify.store("username", username);
+        ampSaveUser(username);
     });
+    
     init();
+    
+    //interface settings
+    if(typeof amplify.store("server") != "undefined"){
+        enableServer();
+        $("#usernameVals").show();
+        
+        $("#serverAddr").val(amplify.store("server").ip);
+        $("#serverPort").val(amplify.store("server").port);
+    }
+    
+    if(typeof amplify.store("username")){
+        $("#username").val(amplify.store("username"));
+    }
+    
 });
 
 
@@ -35,15 +61,6 @@ function init(){
     listTrackers();
 }
 
-
-chrome.extension.onRequest.addListener(function(request, sender, sendResponse){
-    alert("i was called!" + request.msg);
-    if(request && (request.msg === "ishour")){
-        sendResponse({
-            msg: activeThisHour()
-        });
-    }
-});
 
 function getWorkHours(){
     var checkedHours = [];
@@ -201,61 +218,63 @@ function diff (obj1,obj2) {
     return result;
 }
 
-var ct = "http://"+amplify.store("serverIP");
+function enableServer(){
+    if(typeof amplify.store("server") != "undefined"){
+    
+        var ct = "http://"+amplify.store("server").ip+":"+amplify.store("server").port;
 
-amplify.request.define("addTracker", "ajax", {
-    type: "POST",
-    url : ct + "/tracker/set/"+amplify.store("username"),
-    dataType : "json",
-    decoder : function(data, status, xhr, success, error) {
+        amplify.request.define("saveUser", "ajax", {
+            type: "POST",
+            url: ct + "/addUser",
+            dataType: "json",
+            decoder: function(data, status, xhr, success, error){
+                if(xhr.status === 404) {
+                    console.log("404");
+                    error('404');
+                }
+                if(status === "error") {
+                    console.log("error: ");
+                    error();
+                }
+                success(data);
+            },
+            cache : false   
+        });
 
-        if(xhr.status === 404) {
-            console.log("404");
-            error('404');
-        }
-        if(status === "error") {
-            console.log("error: ");
-            error();
-        }
-        success(data);
-    },
-    cache : false
-});
+        amplify.request.define("getUserList", "ajax", {
+            type: "GET",
+            url: ct + "/trackers/userList",
+            dataType: "json",
+            decoder: function(data, status, xhr, success, error){
+                if(xhr.status === 404) {
+                    console.log("404");
+                    error('404');
+                }
+                if(status === "error") {
+                    console.log("error: ");
+                    error(error);
+                }
+                success(data);
+            },
+            cache: false
+        });
+    }
+}
 
-amplify.request.define("saveUser", "ajax", {
-    type: "POST",
-    url: "http://127.0.0.1:3000/addUser",
-    dataType: "json",
-    decoder: function(data, status, xhr, success, error){
-        if(xhr.status === 404) {
-            console.log("404");
-            error('404');
-        }
-        if(status === "error") {
-            console.log("error: ");
-            error();
-        }
-        success(data);
-    },
-    cache : false   
-});
-
-function ampAddTracker(dfd, data) {
-
+function ampGetUserList (){
+   
     amplify.request({
-        resourceId : "addTracker",
-        data: data,
-        success : function(retdata) {
-            dfd.resolve(retdata);
+        resourceId: "getUserList",
+        success: function(data){
+            return data;
         },
-        error : function(data) {
-            console.log('error: ');
-            console.log(data);
+        error: function(data){
+            return data;
         }
     });
 }
 
-function saveUser(username){
+function ampSaveUser(username){
     amplify.request({
         resourceId: "saveUser",
         data: {
@@ -269,4 +288,111 @@ function saveUser(username){
             console.log(data);
         }
     });
+}
+
+
+
+//Charting
+
+$(document).ready(function() {
+        
+    var trackers = JSON.parse(localStorage.trackers), timeStore = JSON.parse(localStorage.timeStore),
+    trackersArray = [], days = [], cta = 0, ctsa = 0;
+    for(var a in trackers){
+        trackersArray[cta++] = a;
+    }
+    for(var a in timeStore){
+        var d = a.split(":"),
+        day = d[1]+"/"+d[2]+"/"+d[0];
+        
+        if($.inArray(day, days) == -1){
+            days[ctsa++] = day;
+        }
+    }     
+         
+    for(var d in days){
+        $("<div/>", {
+            "id":"container_"+d,
+            "style":"width: 80%; height: 400px; margin: 0 auto"
+        }).appendTo("#chartContainer");
+        genCharts(Highcharts, timeStore, trackersArray, days, d)
+    }
+});
+    
+function findObject(name,val) {
+    var len = this.length;
+    for (var i=0; i<len; i++) {
+        if (this[i][name]===val) {
+            return i;
+        }
+    }
+    return false;
+}
+
+function genCharts(Highcharts, timeStore, trackersArray, days, d){
+            
+            
+    var timeStoreArray = [], ctsa2 = 0;
+    
+    for(var t in timeStore){
+            
+        var n = t.split(":"),
+        day = n[1]+"/"+n[2]+"/"+n[0];
+        
+        if(day === days[d]){
+        
+            timeStoreArray.findObject = findObject;
+            var filter = timeStoreArray.findObject("name", timeStore[t].name);
+        
+            if(filter !== false){
+                timeStoreArray[filter] = {
+                    name: timeStore[t].name,
+                    data: [parseInt(timeStoreArray[filter].data) +1]
+                };
+            }else{
+                timeStoreArray[ctsa2++] = {
+                    name: timeStore[t].name,
+                    data: [1]
+                };
+            }
+        }
+    }
+    
+    var chart = new Highcharts.Chart({
+        chart: {
+            renderTo: 'container_'+d,
+            type: 'column'
+        },
+        title: {
+            text: days[d]+' Time Use'
+        },
+        subtitle: {
+            text: 'User: ' + amplify.store("username")
+        },
+        xAxis: {
+            tickmarkPlacement: 'on',
+            labels: {
+                enabled: false
+            }
+        },
+        yAxis: {
+            title: {
+                text: 'Hits'
+            }
+        },
+        tooltip: {
+            formatter: function() {
+                return Highcharts.numberFormat(this.y, 0, ',') +' Hits';
+            }
+        },
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
+            }
+        },
+        series: timeStoreArray
+    });
+            
+        
 }

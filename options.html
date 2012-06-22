@@ -7,6 +7,8 @@
         <script src="js/jquery.min.js"></script>
         <script src="js/jquery-ui.min.js"></script>
         <script src="js/amplify.min.js"></script>
+        <script src="js/highcharts.js"></script>
+        <script src="js/modules/exporting.js"></script>
         <script src="js/options.js"></script>
     </head>
     <body>
@@ -19,7 +21,8 @@
             <ul>
                 <li><a href="#box-options">Time Settings</a></li>
                 <li><a href="#box-tracker">Track List</a></li>
-                <li><a href="#box-stats">View Local Stats</a></li>
+                <li><a href="#box-stats">View Local Stats - Time Spent</a></li>
+                <li><a href="#box-statsPoints">View Local Stats - Points</a></li>
                 <li><a href="#box-remoteConfig">Remote Config</a></li>
                 <li><a href="#box-remoteStats">View Remote Stats</a></li>
             </ul>
@@ -99,8 +102,13 @@
             </section>
             <section id="box-stats">
 
+                <div id="chartContainer"></div>
+                
+            </section>
+            <section id="box-statsPoints">
 
-                <div id="chart_div"></div>
+                <div id="chartContainerPoints"></div>
+                
             </section>
             <section id="box-remoteConfig">
                 <h2>Set up connection to ChronoTyrant server</h2>
@@ -108,17 +116,25 @@
                     <table>
                         <tr>
                             <td>
-                                Server IP:
+                                IP:
                             </td>
                             <td>
                                 <input type="text" value="" id="serverAddr"/>                                
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Port:
+                            </td>
+                            <td>
+                                <input type="text" value="" id="serverPort"/>
                             </td>
                             <td>
                                 <button id="saveServer">Save</button>
                             </td>
                         </tr>
-                        <tr>
-                            <td>
+                        <tr id="usernameVals" style="display: none;">
+                            <td style="height: 100px;">
                                 Username:
                             </td>
                             <td>
@@ -128,7 +144,7 @@
                                 <button id="saveUser">Save</button>
                             </td>
                         </tr>
-                        
+
                     </table>
                 </form>
             </section>
