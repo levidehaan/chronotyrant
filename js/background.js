@@ -12,8 +12,6 @@ function jqueryloader () {
     
     console.log("calling setTimer jqueryloader");
     
-    setTimer();
-    
     if (window.webkitNotifications) {
         if (JSON.parse(localStorage.isActivated)) {
             show();
