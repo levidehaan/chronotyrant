@@ -1,2 +1,42 @@
-h1= title
-p Welcome to #{title}
+.container-fluid#header
+    .row-fluid
+        .span12.hero-unit
+            h1
+                img(src="/images/128.png")
+                | ChronoTyrant
+    
+.container-fluid#main
+    .row-fluid
+        .span2.row-fluid(style='background-color: #BBD8E9; height: 300px;')
+            #navbar-left.navbar.navbar-static
+                .navbar-inner
+                    .container(style="width: auto;")
+                        .brand CT Menu
+                                                            
+            ul.nav.nav-list(ng-controller="menus")
+                li(ng-repeat="menu in menus")
+                    a(href="{{menu.link}}") 
+                        i(class="{{menu.icon}}")
+                        | {{menu.name}}
+                li.nav-header Administration                        
+                li(ng-repeat="menu in menus_other")
+                    a(href="{{menu.link}}") 
+                        i(class="{{menu.icon}}")
+                        | {{menu.name}}
+                
+        .span10.row-fluid(style='background-color: #DCEAF4; height: 300px;')
+            #navbar-left.navbar.navbar-static
+                .navbar-inner
+                    .container(style="width: auto;")
+                        .brand Stats
+                        form.navbar-search.pull-right
+                            input.search-query.span2(type="text", placeholder="Search", style="width: 200px;")
+            #content
+
+.container-fluid.pull-right
+    .row-fluid
+        .span12.row-fluid#footer
+            h6
+                a(href="http://levidehaan.com") Levi DeHaan
+            h6
+                a(href="http://twitter.com/levidehaan") Twitter @levidehaan

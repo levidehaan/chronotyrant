@@ -40,19 +40,17 @@ app.configure('production', function(){
 app.get('/', routes.index);
 
 app.get('/trackers/userList', function(req, res){
-   res.contentType("application/json");
    trackers.list(function(err, body){
       if(!err){
-          res.send(body);;
+          res.json(body);
       } 
    });
 });
 
 app.get('/trackers/get/:user', function(req, res){
-    res.contentType("application/json");
     trackers.get(req.params.user, {}, function(err, body){
         
-        res.send(body); 
+        res.json(body); 
     })
 });
 
@@ -80,5 +78,5 @@ app.post('/addUser', function(req, res){
 });
 
 app.listen(3000, function(){
-    console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
+    console.log("ChronoTyrant listening on port %d in %s mode", app.address().port, app.settings.env);
 });
