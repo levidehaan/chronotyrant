@@ -5,7 +5,8 @@ $(document).ready(function(){
     updateDisplayProjects();
 
     var time = chrome.extension.getBackgroundPage().getTime();
-
+    console.log("Stored Time", time);
+    
     $('#project').on("change",function(e) {
         
         var selected = $("#project :selected"),
@@ -17,6 +18,9 @@ $(document).ready(function(){
             name: selectedName, 
             value: selectedValue
         };
+        
+        console.log("storing: ", store);
+        
         if(localStorage.timeStore){
             var timeStore = getTimeStore();
             $.extend(timeStore, store);
@@ -36,38 +40,10 @@ $(document).ready(function(){
         window.close();
     });
 
-    $('#break5').on("change",function(e) {
-    
-        var time = chrome.extension.getBackgroundPage().getTime(),        
-        store = {};
+    $('#break15').on("click",function(e) {
+        console.log("break 15 called");
         
-        store[time.ymdhm] = {
-            name: "5minbreak", 
-            value: 0
-        };
-        if(localStorage.timeStore){
-            var timeStore = getTimeStore();
-            $.extend(timeStore, store);
-            localStorage.timeStore = JSON.stringify(timeStore);
-            chrome.extension.sendRequest({
-                id:"saveTrackerData", 
-                data: timeStore
-            });
-        }else{
-            localStorage.timeStore = JSON.stringify(store);
-            chrome.extension.sendRequest({
-                id:"saveTrackerData", 
-                data: store
-            });
-        }
-    
-        window.close();
-    });
-
-    $('#break15').on("change",function(e) {
-    
-        var time = chrome.extension.getBackgroundPage().getTime(),    
-        store = {};
+        var store = {};
         
         store[time.ymdhm] = {
             name: "15minbreak", 
@@ -88,14 +64,13 @@ $(document).ready(function(){
                 data: store
             });
         }
-    
+        chrome.extension.getBackgroundPage().pauseTimerfor(15, time);
         window.close();
     });
 
-    $('#break30').on("change",function(e) {
+    $('#break30').on("click",function(e) {
     
-        var time = chrome.extension.getBackgroundPage().getTime(),        
-        store = {};
+        var store = {};
         
         store[time.ymdhm] = {
             name: "30minbreak", 
@@ -116,16 +91,40 @@ $(document).ready(function(){
                 data: store
             });
         }
-    
+        chrome.extension.getBackgroundPage().pauseTimerfor(30, time);
         window.close();
     });
 
-    $('#DFD').on("change",function(e) {
+    $('#break45').on("click",function(e) {
     
-        var time = chrome.extension.getBackgroundPage().getTime(),        
-        store = {};
+        var store = {};
         
-        localStorage.enabled = false;
+        store[time.ymdhm] = {
+            name: "45minbreak", 
+            value: 0
+        };
+        if(localStorage.timeStore){
+            var timeStore = getTimeStore();
+            $.extend(timeStore, store);
+            localStorage.timeStore = JSON.stringify(timeStore);
+            chrome.extension.sendRequest({
+                id:"saveTrackerData", 
+                data: timeStore
+            });
+        }else{
+            localStorage.timeStore = JSON.stringify(store);
+            chrome.extension.sendRequest({
+                id:"saveTrackerData", 
+                data: store
+            });
+        }
+        chrome.extension.getBackgroundPage().pauseTimerfor(45, time);
+        window.close();
+    });
+
+    $('#DFD').on("click",function(e) {
+    
+        var store = {};
         
         store[time.ymdhm] = {
             name: "Done For The Day", 
@@ -146,7 +145,7 @@ $(document).ready(function(){
                 data: store
             });
         }
-    
+        chrome.extension.getBackgroundPage().endTimerForTheDay(time);
         window.close();
     });
 

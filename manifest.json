@@ -11,7 +11,7 @@
     "permissions": ["tabs", "notifications", "<all_urls>"],
     "options_page": "options.html",
     "background": {
-        "scripts": ["js/background.js"]
+        "scripts": ["js/jquery.min.js", "js/amplify.min.js", "js/background.js"]
     },
     "manifest_version": 2,
     "content_scripts": [ {
