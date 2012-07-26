@@ -100,7 +100,7 @@ app.post('/userTrackers/set/:user', function(req, res){
         usertrackers.insert(body, req.params.user, function(err, body){
             console.log(err);
             console.log(body);
-            res.send("success");
+            res.send("set user trackers success. I love me some cheese");
         });
     });
 });

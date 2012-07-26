@@ -3,57 +3,57 @@ window.id = "background";
 console.log(amplify);
 
 if (!localStorage.isInitialized) {
-    localStorage.isActivated = true;   
-    localStorage.frequency = 1;        
-    localStorage.isInitialized = true; 
+    localStorage.isActivated = true;
+    localStorage.frequency = 1;
+    localStorage.isInitialized = true;
 }
-    
 
-    
+
+
 if (window.webkitNotifications) {
     if (JSON.parse(localStorage.isActivated)) {
         show();
     }
 }
-    
-    
-if(typeof amplify.store("server") != "undefined"){
-    
-    var ct = "http://"+amplify.store("server").ip+":"+amplify.store("server").port;
+
+
+if (typeof amplify.store("server") != "undefined") {
+
+    var ct = "http://" + amplify.store("server").ip + ":" + amplify.store("server").port;
 
     amplify.request.define("addTracker", "ajax", {
         type: "POST",
-        url : ct + "/trackers/set/"+amplify.store("username"),
-        dataType : "json",
-        decoder : function(data, status, xhr, success, error) {
+        url: ct + "/trackers/set/" + amplify.store("username"),
+        dataType: "json",
+        decoder: function(data, status, xhr, success, error) {
 
-            if(xhr.status === 404) {
+            if (xhr.status === 404) {
                 console.log("404");
                 error('404');
             }
-            if(status === "error") {
+            if (status === "error") {
                 console.log("error: ");
                 error();
             }
             success(data);
         },
-        cache : false
+        cache: false
     });
 }
 
-chrome.extension.onRequest.addListener(function(request, sender, sendResponse){
-    if( request && (request.id == "saveTrackerData")){
+chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
+    if (request && (request.id == "saveTrackerData")) {
         ampAddTracker(request.data);
     }
-    if(request && (request.msg === "ishour")){
+    if (request && (request.msg === "ishour")) {
         sendResponse({
             msg: activeThisHour()
         });
     }
-        
+
 });
 
-function loadScript(url, callback){
+function loadScript(url, callback) {
     var head = document.getElementsByTagName('head')[0];
     var script = document.createElement('script');
     script.type = 'text/javascript';
@@ -76,75 +76,95 @@ function show() {
     }
 }
 
-function setTimer(){
+function setTimer() {
     var timeNow = getTime();
-    
+
     console.log("timeNow: ", timeNow);
-    
-    if(typeof amplify.store("pausedToday") != "undefined" && amplify.store("pausedToday") !== "null"){
+
+    if (typeof amplify.store("pausedToday") != "undefined" && amplify.store("pausedToday") !== "null") {
         console.log("done for the day: ", amplify.store("pausedToday"));
-        
-        if(timeNow.day == amplify.store("pausedToday")){
-            setTimeout(function(){
+
+        if (timeNow.day == amplify.store("pausedToday")) {
+            setTimeout(function() {
                 setTimer();
             }, 600000);
             return;
-        }else{
+        } else {
+            console.log("setting pausedToday to null");
             amplify.store("pausedToday", null);
             setTimer();
         }
     }
-    
-    if(typeof amplify.store("pausedFor") != "undefined" && amplify.store("pausedFor") != "null"){
-        console.log("pausedFor: ");
-        console.log(amplify.store("pausedFor"));
-        console.log("time now minus time paused for:");
-        console.log(parseFloat(timeNow.min) - parseInt(amplify.store("pausedFor").time.min));
-        console.log("minutes left:");
-        console.log((parseFloat(timeNow.min) - parseInt(amplify.store("pausedFor").time.min)) - parseInt(amplify.store("pausedFor").timeToPause));
-        
-        if(amplify.store("pausedFor") !== null && (parseFloat(timeNow.min) - parseInt(amplify.store("pausedFor").time.min)) <= parseInt(amplify.store("pausedFor").timeToPause)){
-            setTimeout(function(){
+
+    if (typeof amplify.store("pausedFor") != "undefined" && amplify.store("pausedFor") != "null") {
+        console.log("not undefined or null");
+        if (amplify.store('pausedFor').time.day == timeNow.day) {
+            console.log("this pause is for today");
+            var timenow24 = (timeNow.hour24 * 60) + timeNow.min,
+                pausedFor24 = (amplify.store("pausedFor").time.hour24 * 60) + amplify.store("pausedFor").time.min;
+
+            console.log("pausedFor: ");
+            console.log(amplify.store("pausedFor"));
+
+            console.log("time now minus time paused for:");
+            console.log(timenow24 - pausedFor24);
+
+            console.log("minutes left:");
+            console.log(amplify.store("pausedFor").timeToPause - (timenow24 - pausedFor24));
+
+            if ((timenow24 - pausedFor24) < amplify.store("pausedFor").timeToPause) {
+                setTimeout(function() {
+                    console.log("calling setTimer inside 30s loop");
+                    setTimer();
+                }, 30000);
+                return;
+            } else {
+                console.log("setting paused for to null 1");
+                amplify.store("pausedFor", null);
                 setTimer();
-            }, 60000);
-            return;
-        }else{
+                return;
+            }
+        } else {
+            console.log("setting paused for to null 2");
             amplify.store("pausedFor", null);
             setTimer();
+            return;
         }
-    }    
-    
+    } 
+
     setTimeout(function() {
-        if(activeThisHour()){
+        if (activeThisHour()) {
+            console.log("in show setTimer, pausedFor value:");
+            console.log(typeof amplify.store("pausedFor"));
             console.log("calling show setTimer()");
             show();
-        }else{
+        } else {
             console.log("calling setTimer setTimer()");
             setTimer();
         }
     }, (60000 * JSON.parse(localStorage.frequency)));
-    
+
 }
 
-function endTimerForTheDay(time){
+function endTimerForTheDay(time) {
     console.log(time);
     amplify.store("pausedToday", time.day);
 }
 
-function pauseTimerfor(pausefor, time){
+function pauseTimerfor(pausefor, time) {
     amplify.store("pausedFor", {
-        timeToPause: pausefor, 
+        timeToPause: pausefor,
         time: time
     });
 }
 
-function getTime(){
+function getTime() {
     var time = {};
     time.date = new Date();
     time.formatted = /(..):(..)/.exec(time.date);
     time.hour24 = time.formatted[1];
     time.min = time.formatted[2];
-    time.hour = time.formatted[1] % 12 || 12; 
+    time.hour = time.formatted[1] % 12 || 12;
     time.period = time.formatted[1] < 12 ? 'a.m.' : 'p.m.';
     time.day = time.date.getDate();
     time.year = time.date.getFullYear();
@@ -154,15 +174,15 @@ function getTime(){
 }
 
 
-function activeThisHour(){
-    if($.inArray(getTime().hour24, workHours()) !== -1){
+function activeThisHour() {
+    if ($.inArray(getTime().hour24, workHours()) !== -1) {
         return true;
-    }else{
+    } else {
         return false;
     }
 }
 
-function workHours(){
+function workHours() {
     var checkedHours = JSON.parse(localStorage.workHours);
     return checkedHours;
 }
@@ -170,15 +190,14 @@ function workHours(){
 function ampAddTracker(data) {
 
     amplify.request({
-        resourceId : "addTracker",
+        resourceId: "addTracker",
         data: data,
-        success : function(retdata) {
+        success: function(retdata) {
             console.log(retdata);
         },
-        error : function(data) {
+        error: function(data) {
             console.log('error: ');
             console.log(data);
         }
     });
 }
-
