@@ -9,6 +9,7 @@
         <script src="js/amplify.min.js"></script>
         <script src="js/highcharts.js"></script>
         <script src="js/modules/exporting.js"></script>
+        <script src="js/date.js"></script>
         <script src="js/options.js"></script>
     </head>
     <body>
@@ -22,7 +23,7 @@
                 <li><a href="#box-options">Time Settings</a></li>
                 <li><a href="#box-tracker">Track List</a></li>
                 <li><a href="#box-stats">View Local Stats - Time Spent</a></li>
-                <li><a href="#box-statsPoints">View Local Stats - Points</a></li>
+                <li><a href="#box-statsPoints">View Local Stats - Numbers Breakdown</a></li>
                 <li><a href="#box-remoteConfig">Remote Config</a></li>
                 <li><a href="#box-remoteStats">View Remote Stats</a></li>
             </ul>
@@ -34,9 +35,13 @@
                     Display a notification every
                     <select id="frequency">
                         <option>5</option>
+                        <option>6</option>
                         <option>10</option>
+                        <option>12</option>
                         <option>15</option>
+                        <option>18</option>
                         <option>20</option>
+                        <option>24</option>
                         <option>25</option>
                         <option>30</option>
                         <option>60</option>
@@ -107,7 +112,7 @@
             </section>
             <section id="box-statsPoints">
 
-                <div id="chartContainerPoints">
+                <div id="chartContainerNumbersBreakdown">
                     
                     
                 </div>

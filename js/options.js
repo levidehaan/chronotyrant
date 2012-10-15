@@ -290,13 +290,44 @@ function ampSaveUser(username){
     });
 }
 
+//Numbers Breakdown
 
+$(document).ready(function() {
+
+var timeStore = getTimeStore(), frequency = getFrequency(), trackers = getTrackers(), template, templateData, dateContainer = false;
+
+$.each(timeStore, function(index, value){
+    
+    var d = index.split(":");
+
+    if(dateContainer){
+        var d2 = dateContainer;
+        if( (Date.equals(Date.parse(d[1]+"/"+d[2]+"/"+d[0]), d2[1]+"/"+d2[2]+"/"+d2[0])) == 0 ){
+            templateData[] = value.name;
+        }
+
+    }else{
+        
+        templateData[] = value.name;
+    }
+    
+    dateContainer = index.split(":");   
+    
+});
+
+template = $("<div/>", {id: "template", class: "template"});
+
+console.log(amplify.store("timeStore"));
+
+$('#chartContainerNumbersBreakdown');
+
+});
 
 //Charting
 
 $(document).ready(function() {
         
-    var trackers = JSON.parse(localStorage.trackers), timeStore = JSON.parse(localStorage.timeStore),
+    var trackers = getTrackers(), timeStore = getTimeStore(),
     trackersArray = [], days = [], cta = 0, ctsa = 0;
     for(var a in trackers){
         trackersArray[cta++] = a;
@@ -329,6 +360,8 @@ function findObject(name,val) {
     return false;
 }
 
+
+//generate charts
 function genCharts(Highcharts, timeStore, trackersArray, days, d){
             
             
@@ -395,4 +428,34 @@ function genCharts(Highcharts, timeStore, trackersArray, days, d){
     });
             
         
+}
+
+function getTimeStore(){
+    if(localStorage.timeStore){
+        return JSON.parse(localStorage.timeStore);
+    }else{
+        return false;
+    }
+}
+
+function getFrequency(){
+    if(localStorage.frequency){
+        return JSON.parse(localStorage.frequency);
+    }else{
+        return false;
+    }
+}
+
+function getTrackers(){
+    if(localStorage.trackers){
+        return JSON.parse(localStorage.trackers);
+    }else{
+        return false;
+    }
+}
+
+function setTimeStore(store){
+    var timeStore = getTimeStore();
+    $.extend(timeStore, store);
+    localStorage.timeStore = JSON.stringify(timeStore);
 }

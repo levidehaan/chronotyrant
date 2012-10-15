@@ -170,3 +170,9 @@ function getTimeStore(){
         return false;
     }
 }
+
+function setTimeStore(store){
+    var timeStore = getTimeStore();
+    $.extend(timeStore, store);
+    localStorage.timeStore = JSON.stringify(timeStore);
+}
